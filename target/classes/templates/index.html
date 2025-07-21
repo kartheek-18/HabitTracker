@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Habit Tracker</title>
+    <link rel="stylesheet" href="/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(to right, #f8f9fa, #e1f5fe);
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            padding: 30px 0 10px;
+            font-size: 2.5rem;
+            color: #2c3e50;
+        }
+
+        form {
+            background-color: #ffffff;
+            max-width: 500px;
+            margin: 20px auto;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+
+        form input, form button {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 12px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+
+        form button {
+            background-color: #28a745;
+            color: white;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+        }
+
+        form button:hover {
+            background-color: #218838;
+        }
+
+        hr {
+            border: none;
+            height: 2px;
+            background-color: #ddd;
+            margin: 30px auto;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        li {
+            background-color: #ffffff;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        li div {
+            flex: 1;
+        }
+
+        li strong {
+            font-size: 18px;
+            color: #333;
+        }
+
+        li span {
+            color: #777;
+            font-size: 14px;
+        }
+
+        li form {
+            margin-left: 20px;
+        }
+
+        li form button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        li form button:hover {
+            background-color: #0056b3;
+        }
+
+        canvas {
+            display: block;
+            max-width: 90%;
+            margin: 40px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.08);
+        }
+    </style>
+</head>
+<body>
+<h1>🎯 My Habit Tracker</h1>
+
+<form action="/add" method="post">
+    <input type="text" name="title" placeholder="Habit Title" required />
+    <input type="text" name="description" placeholder="Description" />
+    <input type="number" name="targetDays" placeholder="Target Days" />
+    <button type="submit">➕ Add Habit</button>
+</form>
+
+<hr style="max-width: 600px;" />
+
+<ul>
+    <li th:each="habit : ${habits}">
+        <div>
+            <a th:href="@{/habit/{id}(id=${habit.id})}">
+                <strong th:text="${habit.title}">Habit</strong>
+            </a><br/>
+            <span th:text="'🔥 Streak: ' + ${habit.currentStreak}"></span>
+        </div>
+        <form th:action="@{/mark/{id}(id=${habit.id})}" method="post">
+            <button type="submit">✔️ Mark Done</button>
+        </form>
+    </li>
+</ul>
+
+<canvas id="streakChart" width="600" height="300"></canvas>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+
+    let labels = [
+        /*[# th:each="habit : ${habits}" ]*/
+        /*[[${habit.title}]]*/ ,
+        /*[/]*/
+    ];
+
+    let data = [
+        /*[# th:each="habit : ${habits}" ]*/
+        /*[[${habit.currentStreak}]]*/ ,
+        /*[/]*/
+    ];
+
+    /*]]>*/
+
+    new Chart(document.getElementById('streakChart'), {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: '🔥 Current Streak',
+                data: data,
+                backgroundColor: 'rgba(255, 159, 64, 0.6)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 2,
+                borderRadius: 6
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+
+</body>
+</html>

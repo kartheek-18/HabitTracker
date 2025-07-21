@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${habit.title} + ' - Gallery'">Habit Detail</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(to right, #f3f4f6, #e3f2fd);
+            margin: 0;
+            padding: 20px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #2c3e50;
+            margin-top: 20px;
+        }
+
+        form {
+            background-color: #ffffff;
+            max-width: 500px;
+            margin: 20px auto;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+        }
+
+        input[type="file"] {
+            font-size: 16px;
+        }
+
+        button {
+            padding: 12px 20px;
+            background-color: #2196f3;
+            color: white;
+            font-weight: bold;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #1976d2;
+        }
+
+        h3 {
+            margin-top: 40px;
+            margin-left: 10px;
+            color: #444;
+        }
+
+        .image-row {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+            margin: 10px;
+        }
+
+        .image-row a {
+            text-decoration: none;
+        }
+
+        .image-row img {
+            width: 350px;
+            height: auto;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+            cursor: zoom-in;
+        }
+
+        .image-row img:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <h2 th:text="${habit.title} + ' - Gallery'">Habit Title</h2>
+
+    <form th:action="@{/habit/{id}/upload(id=${habit.id})}" method="post" enctype="multipart/form-data">
+        <input type="file" name="image" required>
+        <button type="submit">📤 Upload Today's Image</button>
+    </form>
+
+    <div th:each="entry : ${imageGroups}">
+        <h3 th:text="${entry.key}">Date</h3>
+        <div class="image-row">
+            <a th:each="img : ${entry.value}"
+               th:href="@{'/uploads/' + ${habit.id} + '/' + ${img.fileName}}"
+               target="_blank">
+                <img th:src="@{'/uploads/' + ${habit.id} + '/' + ${img.fileName}}"
+                     alt="Habit image" />
+            </a>
+        </div>
+    </div>
+</body>
+</html>
